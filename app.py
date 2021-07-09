@@ -99,7 +99,7 @@ if search:
             matches.append(row)
     temp_df = pd.DataFrame(matches)
 
-    df1 = temp_df[['text', 'shelfmark']]
+    df1 = temp_df[['text', 'shelfmark', 'person']]
     df1.to_csv("temp/temp.csv")
 
     net = Network(height='750px', width='100%', bgcolor='#222222', font_color='white')
@@ -108,17 +108,21 @@ if search:
 
     sources = net_data['text']
     targets = net_data['shelfmark']
+    people = net_data['person']
 
-    edge_data = zip(sources, targets)
+    edge_data = zip(sources, targets, people)
+
 
     for e in edge_data:
         src = e[0]
         dst = e[1]
-        # w = e[2]
+        prsn = e[2]
 
         net.add_node(src, src, title=src)
         net.add_node(dst, dst, title=dst, color="green")
+        net.add_node(prsn, title=prsn, color="red")
         net.add_edge(src, dst)
+        net.add_edge(prsn, src)
 
     neighbor_map = net.get_adj_list()
 
