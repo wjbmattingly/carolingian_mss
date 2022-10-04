@@ -14,7 +14,7 @@ if "df" not in st.session_state:
     st.session_state["csv"] = csv
 
 st.sidebar.markdown("## Citation to Original Document")
-st.sidebar.markdown('Van Name Edwards, Burton. "The Manuscript Transmission of Carolingian Biblicial Commentaries". Accessed 06/01/2018.')
+st.sidebar.markdown('[Van Name Edwards, Burton. "The Manuscript Transmission of Carolingian Biblicial Commentaries"](https://wjbmattingly-carolingian-mss-home-bixjsx.streamlitapp.com/). Accessed 06/01/2018.')
 
 title = st.title("Carolingian Exegesis Manuscripts")
 #load the data
