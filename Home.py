@@ -60,7 +60,8 @@ if search_types:
 if search_books:
     matches = matches.loc[matches["book"].isin(search_books)]
 if search_libraries:
-    matches = matches.loc[matches["ms"].str.contains(search_libraries)]
+    column_select = st.sidebar.selectbox("Select Column", ['shelfmark', 'ms'])
+    matches = matches.loc[matches[column_select].str.contains(search_libraries)]
 
 
 # temp_df = pd.DataFrame(matches)
