@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-from pyvis.network import Network
-import streamlit.components.v1 as components
 
 @st.cache
 def convert_df(df):
@@ -38,24 +36,31 @@ if "book_types" not in st.session_state:
 if "books" not in st.session_state:
     add_session_state("books", "book")
 
+idx = []
+
+def update(matcher, new):
+    global idx
 
 # books = list(set(df.dropna().book.tolist()))
 # books.sort()
+matches = df
+
+
 
 searches = st.sidebar.multiselect("Select Exegete(s)", st.session_state["people"])
 search_types = st.sidebar.multiselect("Select Exegesis Types", st.session_state["book_types"])
 search_books = st.sidebar.multiselect("Select Books", st.session_state["books"])
+search_libraries =st.sidebar.text_input("Search for Library")
 
 
-
-matches = df
 if searches:
     matches = matches.loc[matches["person"].isin(searches)]
-    # st.session_state["book_types"] = modify_list(matches, "type")
 if search_types:
     matches = matches.loc[matches["type"].isin(search_types)]
 if search_books:
     matches = matches.loc[matches["book"].isin(search_books)]
+if search_libraries:
+    matches = matches.loc[matches["ms"].str.contains(search_libraries)]
 
 
 # temp_df = pd.DataFrame(matches)
@@ -65,6 +70,7 @@ st.session_state["df"] = matches
 
 if len(st.session_state['df']) != 2744:
     st.markdown(st.session_state["df"].to_markdown(), unsafe_allow_html=True)
+    # st.dataframe(st.session_state["df"])
 
 st.sidebar.markdown("## Save Results")
 filename = st.sidebar.text_input("Type Filename", "results.csv")
