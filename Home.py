@@ -16,7 +16,7 @@ st.sidebar.markdown('[Van Name Edwards, Burton. "The Manuscript Transmission of 
 
 title = st.title("Carolingian Exegesis Manuscripts")
 #load the data
-df = pd.read_csv("data/bvne_mss.csv")
+df = pd.read_csv("data/bvne_mss_cleaned.csv")
 df = df.iloc[: , 1:]
 
 def add_session_state(label, column):
@@ -47,7 +47,6 @@ def update(matcher, new):
 matches = df
 
 
-dates = df['date'].unique()
 
 searches = st.sidebar.multiselect("Select Exegete(s)", st.session_state["people"])
 search_types = st.sidebar.multiselect("Select Exegesis Types", st.session_state["book_types"])
@@ -75,6 +74,7 @@ st.session_state["csv"] = csv
 st.session_state["df"] = matches
 
 if len(st.session_state['df']) != 2744:
+    st.write(f"Displaying {len(st.session_state['df'])} results.")
     st.markdown(st.session_state["df"].to_markdown(), unsafe_allow_html=True)
     # st.dataframe(st.session_state["df"])
 
