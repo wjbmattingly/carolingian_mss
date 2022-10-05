@@ -35,7 +35,8 @@ if "book_types" not in st.session_state:
     add_session_state("book_types", "type")
 if "books" not in st.session_state:
     add_session_state("books", "book")
-
+if "dates" not in st.session_state:
+    add_session_state("dates", "date")
 idx = []
 
 def update(matcher, new):
@@ -46,10 +47,12 @@ def update(matcher, new):
 matches = df
 
 
+dates = df['date'].unique()
 
 searches = st.sidebar.multiselect("Select Exegete(s)", st.session_state["people"])
 search_types = st.sidebar.multiselect("Select Exegesis Types", st.session_state["book_types"])
 search_books = st.sidebar.multiselect("Select Books", st.session_state["books"])
+search_dates = st.sidebar.multiselect("Select Date(s)", st.session_state["dates"])
 search_libraries =st.sidebar.text_input("Search for Library")
 
 
@@ -59,6 +62,8 @@ if search_types:
     matches = matches.loc[matches["type"].isin(search_types)]
 if search_books:
     matches = matches.loc[matches["book"].isin(search_books)]
+if search_dates:
+    matches = matches.loc[matches["date"].isin(search_dates)]
 if search_libraries:
     column_select = st.sidebar.selectbox("Select Column", ['shelfmark', 'ms'])
     matches = matches.loc[matches[column_select].str.contains(search_libraries)]
