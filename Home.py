@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-from pyvis.network import Network
-import streamlit.components.v1 as components
 
 @st.cache
 def convert_df(df):
@@ -14,11 +12,11 @@ if "df" not in st.session_state:
     st.session_state["csv"] = csv
 
 st.sidebar.markdown("## Citation to Original Document")
-st.sidebar.markdown('Van Name Edwards, Burton. "The Manuscript Transmission of Carolingian Biblicial Commentaries". Accessed 06/01/2018.')
+st.sidebar.markdown('[Van Name Edwards, Burton. "The Manuscript Transmission of Carolingian Biblicial Commentaries"](https://wjbmattingly-carolingian-mss-home-bixjsx.streamlitapp.com/). Accessed 06/01/2018.')
 
 title = st.title("Carolingian Exegesis Manuscripts")
 #load the data
-df = pd.read_csv("data/bvne_mss.csv")
+df = pd.read_csv("data/bvne_mss_cleaned.csv")
 df = df.iloc[: , 1:]
 
 def add_session_state(label, column):
@@ -37,25 +35,37 @@ if "book_types" not in st.session_state:
     add_session_state("book_types", "type")
 if "books" not in st.session_state:
     add_session_state("books", "book")
+if "dates" not in st.session_state:
+    add_session_state("dates", "date")
+idx = []
 
+def update(matcher, new):
+    global idx
 
 # books = list(set(df.dropna().book.tolist()))
 # books.sort()
+matches = df
+
+
 
 searches = st.sidebar.multiselect("Select Exegete(s)", st.session_state["people"])
 search_types = st.sidebar.multiselect("Select Exegesis Types", st.session_state["book_types"])
 search_books = st.sidebar.multiselect("Select Books", st.session_state["books"])
+search_dates = st.sidebar.multiselect("Select Date(s)", st.session_state["dates"])
+search_libraries =st.sidebar.text_input("Search for Library")
 
 
-
-matches = df
 if searches:
     matches = matches.loc[matches["person"].isin(searches)]
-    # st.session_state["book_types"] = modify_list(matches, "type")
 if search_types:
     matches = matches.loc[matches["type"].isin(search_types)]
 if search_books:
     matches = matches.loc[matches["book"].isin(search_books)]
+if search_dates:
+    matches = matches.loc[matches["date"].isin(search_dates)]
+if search_libraries:
+    column_select = st.sidebar.selectbox("Select Column", ['shelfmark', 'ms'])
+    matches = matches.loc[matches[column_select].str.contains(search_libraries)]
 
 
 # temp_df = pd.DataFrame(matches)
@@ -64,7 +74,9 @@ st.session_state["csv"] = csv
 st.session_state["df"] = matches
 
 if len(st.session_state['df']) != 2744:
+    st.write(f"Displaying {len(st.session_state['df'])} results.")
     st.markdown(st.session_state["df"].to_markdown(), unsafe_allow_html=True)
+    # st.dataframe(st.session_state["df"])
 
 st.sidebar.markdown("## Save Results")
 filename = st.sidebar.text_input("Type Filename", "results.csv")
